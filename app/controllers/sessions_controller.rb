@@ -13,7 +13,7 @@ class SessionsController < ApplicationController
   end
   def destroy
     session.delete(:user_id)
-    flashp[:notice] = 'Logged out'
+    flash[:notice] = 'Logged out'
     redirect_to new_session_path
   end
 end
