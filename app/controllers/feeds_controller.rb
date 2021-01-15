@@ -1,5 +1,6 @@
 class FeedsController < ApplicationController
   before_action :set_feed, only: [:show, :edit, :update, :destroy]
+  before_action :set_contact, only: [:show, :edit, :update, :destroy]
 
   # GET /feeds
   # GET /feeds.json
@@ -32,7 +33,6 @@ class FeedsController < ApplicationController
   # POST /feeds.json
   def create
     @feed = Feed.new(feed_params)
-
     respond_to do |format|
       if @feed.save
         format.html { redirect_to @feed, notice: 'Feed was successfully created.' }
@@ -41,6 +41,12 @@ class FeedsController < ApplicationController
         format.html { render :new }
         format.json { render json: @feed.errors, status: :unprocessable_entity }
       end
+    end
+    @contact = Contact.new(contact_params)
+    if @contact.save
+      ConfirmationMailer.confirmation_mail(@contact).deliver
+    else
+      render :new
     end
   end
 
@@ -72,6 +78,9 @@ class FeedsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_feed
       @feed = Feed.find(params[:id])
+    end
+    def contact_params
+      params.require(:contact).permit(:name, :email, :content)
     end
 
     # Only allow a list of trusted parameters through.

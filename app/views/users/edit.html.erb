@@ -1,7 +1,7 @@
 <%= form_with(model: @user, local: true) do |form| %>
 <h1><%= @user.name %>のページ</h1>
 <p>メールアドレス: <%= @user.email %></p>
-<p>Image: <%= image_tag @user.image.url %>
+<%= form.file_field :image %>
 <% end %>
 <%= link_to 'Edit', edit_user_path(@user) %>
 <%= link_to 'Back', users_path %>
