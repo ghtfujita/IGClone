@@ -14,7 +14,18 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
   end
   def edit
-    @user = User.find(params[:id])
+    @user = User.find(current_user.id)
+  end
+  def update
+    @user = User.find(current_user.id)
+    if @user.update(user_params)
+      redirect_to @user, notice: 'Feed was successfully updated.'
+      #format.json { render :show, status: :ok, location: @user }
+    else
+      render :edit
+      #format.html { render :edit }
+      #format.json { render json: @user.errors, status: :unprocessable_entity }
+    end
   end
 end
 

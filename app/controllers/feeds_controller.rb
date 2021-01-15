@@ -23,6 +23,7 @@ class FeedsController < ApplicationController
   end
   def confirm
     @feed = Feed.new(feed_params)
+    @feed.user_id = current_user.id
   end
 
   # GET /feeds/1/edit
@@ -33,6 +34,7 @@ class FeedsController < ApplicationController
   # POST /feeds.json
   def create
     @feed = Feed.new(feed_params)
+    @feed.user_id = current_user.id
     respond_to do |format|
       if @feed.save
         format.html { redirect_to @feed, notice: 'Feed was successfully created.' }
@@ -42,7 +44,7 @@ class FeedsController < ApplicationController
         format.json { render json: @feed.errors, status: :unprocessable_entity }
       end
     end
-    @contact = Contact.new(contact_params)
+    @contact = Contact.new(name: current_user.name, email: current_user.email)
     if @contact.save
       ConfirmationMailer.confirmation_mail(@contact).deliver
     else
@@ -79,12 +81,15 @@ class FeedsController < ApplicationController
     def set_feed
       @feed = Feed.find(params[:id])
     end
+    def set_contact
+      @contact = Contact.find(current_user.id)
+    end
     def contact_params
       params.require(:contact).permit(:name, :email, :content)
     end
 
     # Only allow a list of trusted parameters through.
     def feed_params
-      params.require(:feed).permit(:image, :image_cache)
+      params.require(:feed).permit(:image, :image_cache, :user_id, :content)
     end
 end
