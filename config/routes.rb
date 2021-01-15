@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :favourites
   resources :sessions, only: [:new, :create, :destroy]
   resources :feeds do
     collection do
